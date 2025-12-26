@@ -203,6 +203,14 @@ header h1 {
 .modal-content.modal-subopciones {
     max-width: 900px;
     padding: 25px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content.modal-subopciones {
+    max-width: 900px;
+    padding: 25px;
 }
 
 @keyframes slideDown {
@@ -311,8 +319,6 @@ header h1 {
 /* Modal de subopciones */
 .modal-subopciones {
     max-width: 900px;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 .subopciones-container {
@@ -321,8 +327,9 @@ header h1 {
     gap: 12px;
     margin: 20px 0;
     padding: 10px;
-    max-height: none;
-    overflow: visible;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .subopcion-item {
