@@ -434,6 +434,9 @@ header h1 {
         line-height: 1.5;
         color: #000;
         box-sizing: border-box;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-weight: 500;
     }
 
     .ticket-logo {
@@ -453,12 +456,13 @@ header h1 {
     .ticket-titulo {
         text-align: center;
         font-size: 13pt;
-        font-weight: bold;
+        font-weight: 900;
         margin-bottom: 12px;
-        color: #2c3e50;
+        color: #000;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.3;
+        -webkit-text-stroke: 0.2px #000;
     }
 
     .ticket-info {
@@ -484,26 +488,29 @@ header h1 {
 
     .ticket-info-item.telefono::before {
         content: '📞';
-        font-size: 10pt;
+        font-size: 11pt;
         text-align: center;
         line-height: 3mm;
         width: 5mm;
+        font-weight: bold;
     }
 
     .ticket-info-item.direccion::before {
         content: '📍';
-        font-size: 10pt;
+        font-size: 11pt;
         text-align: center;
         line-height: 3mm;
         width: 5mm;
+        font-weight: bold;
     }
 
     .ticket-info-item.horario::before {
         content: '🕐';
-        font-size: 10pt;
+        font-size: 11pt;
         text-align: center;
         line-height: 3mm;
         width: 5mm;
+        font-weight: bold;
     }
 
     .ticket-info-item .info-text {
@@ -511,26 +518,31 @@ header h1 {
         white-space: pre-line;
         word-wrap: break-word;
         font-size: 9pt;
+        font-weight: 600;
+        color: #000;
     }
 
     .ticket-texto-adicional {
         margin-top: 12px;
         padding-top: 10px;
-        border-top: 1px dashed #999;
+        border-top: 2px solid #000;
         white-space: pre-line;
         word-wrap: break-word;
         font-size: 8.5pt;
         line-height: 1.4;
+        font-weight: 600;
+        color: #000;
     }
 
     .ticket-footer {
         margin-top: 15px;
         text-align: center;
         font-size: 7pt;
-        color: #666;
-        border-top: 1px dashed #999;
+        color: #000;
+        border-top: 2px solid #000;
         padding-top: 8px;
         line-height: 1.3;
+        font-weight: 600;
     }
 }
 
