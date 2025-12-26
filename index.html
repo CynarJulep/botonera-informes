@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botonera de Informes - Municipalidad</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="logo_muni.png" alt="Logo Municipalidad" class="header-logo">
+                <h1>Informes - Atención Ciudadana</h1>
+            </div>
+        </header>
+        
+        <div class="botonera" id="botonera">
+            <!-- Los botones se generan dinámicamente desde config.json -->
+        </div>
+        
+        <div class="boton-personalizado">
+            <button class="btn-personalizado" id="btnPersonalizado">
+                <span class="btn-letra">+</span>
+                <div class="btn-contenido">
+                    <span class="btn-nombre">Ticket Personalizado</span>
+                    <span class="btn-descripcion">Crear un ticket con información personalizada</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para ticket personalizado -->
+    <div class="modal" id="modalPersonalizado">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Crear Ticket Personalizado</h2>
+            <form id="formPersonalizado">
+                <div class="form-group">
+                    <label for="tituloPersonalizado">Título *</label>
+                    <input type="text" id="tituloPersonalizado" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefonoPersonalizado">Teléfono</label>
+                    <input type="text" id="telefonoPersonalizado">
+                </div>
+                <div class="form-group">
+                    <label for="direccionPersonalizado">Dirección</label>
+                    <textarea id="direccionPersonalizado" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="horarioPersonalizado">Horario</label>
+                    <input type="text" id="horarioPersonalizado" placeholder="Ej: De 7:30 a 13:00 hrs">
+                </div>
+                <div class="form-group">
+                    <label for="textoAdicional">Texto Adicional</label>
+                    <textarea id="textoAdicional" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn-imprimir">Imprimir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para subopciones -->
+    <div class="modal" id="modalSubopciones">
+        <div class="modal-content modal-subopciones">
+            <span class="close" id="closeModalSubopciones">&times;</span>
+            <h2 id="tituloModalSubopciones">Seleccione una opción</h2>
+            <div class="subopciones-container" id="subopcionesContainer">
+                <!-- Las subopciones se generan dinámicamente -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancelar" id="btnCancelarSubopciones">Cancelar</button>
+                <button type="button" class="btn-imprimir-completo" id="btnImprimirCompleto">Imprimir Completo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área oculta para generar el ticket antes de imprimir -->
+    <div id="ticketContainer" class="ticket-container"></div>
+
+    <!-- Configuración embebida para evitar problemas de CORS -->
+    <script>
+        // Configuración de botones (fallback embebido para uso local)
+        const CONFIG_DATA = {
+          "botones": [
+            {
+              "id": "AS",
+              "nombre": "Acción Social",
+              "descripcion": "Servicios sociales y asistencia",
+              "ticket": {
+                "titulo": "ACCIÓN SOCIAL",
+                "telefono": "3425 50-3353",
+                "direccion": "Casa Beata Clara Bosatta\nBlas Parera 7740",
+                "horario": ""
+              }
+            },
+            {
+              "id": "CA",
+              "nombre": "Capital Activa",
+              "descripcion": "Servicios y programas activos",
+              "ticket": {
+                "titulo": "CAPITAL ACTIVA",
+                "telefono": "4574158",
+                "direccion": "Cortada Falucho 2450",
+                "horario": "De 7:30 a 13:00 hrs",
+                "textoAdicional": "WhatsApp: 3425677708"
+              }
+            },
+            {
+              "id": "AC",
+              "nombre": "Accesibilidad y Derechos",
+              "descripcion": "Programa de accesibilidad y derechos",
+              "ticket": {
+                "titulo": "ACCESIBILIDAD Y DERECHOS",
+                "telefono": "4571513",
+                "direccion": "25 de Mayo 2714",
+                "horario": "De 7:30 a 13:00 hrs",
+                "textoAdicional": "WhatsApp: 3425394568\nEmail: programa.accesibilidadyderechos@gmail.com"
+              }
+            },
+            {
+              "id": "AM",
+              "nombre": "Adultos Mayores",
+              "descripcion": "Servicios para adultos mayores",
+              "ticket": {
+                "titulo": "ADULTOS MAYORES",
+                "telefono": "156109633",
+                "direccion": "Las Heras 2883",
+                "horario": "De 7:30 a 13:00 hrs"
+              }
+            },
+            {
+              "id": "EM",
+              "nombre": "Emprendedores",
+              "descripcion": "Servicios para emprendedores",
+              "ticket": {
+                "titulo": "EMPRENDEDORES",
+                "telefono": "4574161 - 4574164",
+                "direccion": "Belgrano 2910. 1 piso - Ala Norte",
+                "horario": ""
+              }
+            },
+            {
+              "id": "ES",
+              "nombre": "Economía Social",
+              "descripcion": "Programas de economía social",
+              "ticket": {
+                "titulo": "ECONOMÍA SOCIAL",
+                "telefono": "",
+                "direccion": "Las Heras 2751",
+                "horario": "De 7:30 a 13:00 hrs",
+                "textoAdicional": "WhatsApp: 3425288543"
+              }
+            },
+            {
+              "id": "HA",
+              "nombre": "Hábitat",
+              "descripcion": "Programas de hábitat y vivienda",
+              "ticket": {
+                "titulo": "HÁBITAT",
+                "telefono": "",
+                "direccion": "Cortada Falucho 2450",
+                "horario": "",
+                "textoAdicional": "WhatsApp: 342 6146921"
+              }
+            },
+            {
+              "id": "SA",
+              "nombre": "Seguridad Alimentaria",
+              "descripcion": "Programas de seguridad alimentaria",
+              "ticket": {
+                "titulo": "SEGURIDAD ALIMENTARIA",
+                "telefono": "0342 -4571880",
+                "direccion": "Pedro Vittori 4212",
+                "horario": ""
+              }
+            },
+            {
+              "id": "TF",
+              "nombre": "Tribunal de Faltas",
+              "descripcion": "Tribunal de faltas municipales",
+              "ticket": {
+                "titulo": "TRIBUNAL DE FALTAS",
+                "telefono": "",
+                "direccion": "San Luis 3078",
+                "horario": "De 7:30 a 13:00 hrs",
+                "textoAdicional": "WhatsApp: 3425936313"
+              }
+            },
+            {
+              "id": "VM",
+              "nombre": "Varones y Masculinidades",
+              "descripcion": "Espacio de varones y masculinidades",
+              "ticket": {
+                "titulo": "ESPACIO DE VARONES Y\nMASCULINIDADES",
+                "telefono": "342-4726650",
+                "direccion": "",
+                "horario": "Miércoles de 12 a 15 hs",
+                "textoAdicional": "Email: Santafevarones@gmail.com\nUna vez realizado el primer contacto, se procede a incluir al varon interesado de espera de ingreso al espacio"
+              }
+            },
+            {
+              "id": "VC",
+              "nombre": "Vinculación Ciudadana",
+              "descripcion": "Dirección de derecho y vinculación ciudadana",
+              "ticket": {
+                "titulo": "DIRECCIÓN DE DERECHO Y\nVINCULACIÓN CIUDADANA",
+                "telefono": "0342 -4574119 / 0800 444 0442",
+                "direccion": "Las Heras 2800",
+                "horario": "Lunes a Viernes de 7:30 a 13:00 hs",
+                "textoAdicional": ""
+              }
+            },
+            {
+              "id": "AC2",
+              "nombre": "Atención Ciudadana",
+              "descripcion": "Reclamos y atención ciudadana",
+              "ticket": {
+                "titulo": "ATENCIÓN CIUDADANA",
+                "telefono": "0800 777 5000",
+                "direccion": "",
+                "horario": "",
+                "textoAdicional": "Email: informes@santafeciudad.gov.ar\nChat web: Santafeciudad.gov.ar"
+              }
+            },
+            {
+              "id": "RA",
+              "nombre": "Registro del Automotor",
+              "descripcion": "Registro del automotor - Múltiples sedes",
+              "tieneSubopciones": true,
+              "subopciones": [
+                {
+                  "nombre": "Santa Fe Nro. 1",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 1",
+                    "telefono": "(0342) 4594702",
+                    "direccion": "San Geronimo 2016",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe Nro. 2",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 2",
+                    "telefono": "(0342) 4524162",
+                    "direccion": "Cruz Roja Argentina 1973",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe Nro. 3",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 3",
+                    "telefono": "(0342) 4594498",
+                    "direccion": "4 de Enero 1744",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe Nro. 4",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 4",
+                    "telefono": "(0342) 4550141",
+                    "direccion": "25 de Mayo 2779",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe Nro. 5",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 5",
+                    "telefono": "(0342) 4596248",
+                    "direccion": "Moreno 2469",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe Nro. 6",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 6",
+                    "telefono": "(0342) 4580463",
+                    "direccion": "Lisandro de la Torre 3029",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe Nro. 7",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE NRO. 7",
+                    "telefono": "(0342) 45810611",
+                    "direccion": "9 de Julio 2279",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe \"A\"",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE \"A\"",
+                    "telefono": "(0342) 4550141",
+                    "direccion": "25 de Mayo 2779",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Santa Fe \"B\"",
+                  "ticket": {
+                    "titulo": "REGISTRO DEL AUTOMOTOR\nSANTA FE \"B\"",
+                    "telefono": "(0342) 459141",
+                    "direccion": "Av. Freyre 1465",
+                    "horario": ""
+                  }
+                }
+              ],
+              "ticket": {
+                "titulo": "REGISTRO DEL AUTOMOTOR",
+                "telefono": "",
+                "direccion": "",
+                "horario": "",
+                "textoAdicional": "Santa Fe Nro. 1: San Geronimo 2016 - (0342) 4594702\nSanta Fe Nro. 2: Cruz Roja Argentina 1973 - (0342) 4524162\nSanta Fe Nro. 3: 4 de Enero 1744 - (0342) 4594498\nSanta Fe Nro. 4: 25 de Mayo 2779 - (0342) 4550141\nSanta Fe Nro. 5: Moreno 2469 - (0342) 4596248\nSanta Fe Nro. 6: Lisandro de la Torre 3029 - (0342) 4580463\nSanta Fe Nro. 7: 9 de Julio 2279 - (0342) 45810611\nSanta Fe \"A\": 25 de Mayo 2779 - (0342) 4550141\nSanta Fe \"B\": Av. Freyre 1465 - (0342) 459141"
+              }
+            },
+            {
+              "id": "DI",
+              "nombre": "Distritos",
+              "descripcion": "Distritos municipales - Múltiples ubicaciones",
+              "tieneSubopciones": true,
+              "subopciones": [
+                {
+                  "nombre": "Noroeste",
+                  "ticket": {
+                    "titulo": "DISTRITO NOROESTE",
+                    "telefono": "",
+                    "direccion": "Teniente Loza 6970",
+                    "horario": "",
+                    "textoAdicional": "Email: distrito.noroeste@santafeciudad.gov.ar"
+                  }
+                },
+                {
+                  "nombre": "Norte",
+                  "ticket": {
+                    "titulo": "DISTRITO NORTE",
+                    "telefono": "4578625",
+                    "direccion": "Av. Gorriti 3900 – Parque Norte Botánico",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Noreste",
+                  "ticket": {
+                    "titulo": "DISTRITO NORESTE",
+                    "telefono": "4806818",
+                    "direccion": "Aristóbulo del Valle 9446",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Oeste",
+                  "ticket": {
+                    "titulo": "DISTRITO OESTE",
+                    "telefono": "",
+                    "direccion": "Cementerio Municipal – Blas Parera 5401",
+                    "horario": "",
+                    "textoAdicional": "Email: distrito.oeste@santafeciudad.gov.ar"
+                  }
+                },
+                {
+                  "nombre": "Este",
+                  "ticket": {
+                    "titulo": "DISTRITO ESTE",
+                    "telefono": "4806812 / 4806813 / 4578418",
+                    "direccion": "Prado Español – Av. General Paz y Hernandarias",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "Suroeste",
+                  "ticket": {
+                    "titulo": "DISTRITO SUROESTE",
+                    "telefono": "",
+                    "direccion": "Boca del Tigre (J.J. Paso y Dr. Zavalla)",
+                    "horario": "",
+                    "textoAdicional": "Email: distrito.suroeste@santafeciudad.gov.ar"
+                  }
+                },
+                {
+                  "nombre": "Centro",
+                  "ticket": {
+                    "titulo": "DISTRITO CENTRO",
+                    "telefono": "4571530",
+                    "direccion": "Estación Belgrano – Bv. Gálvez 1150",
+                    "horario": ""
+                  }
+                },
+                {
+                  "nombre": "La Costa",
+                  "ticket": {
+                    "titulo": "DISTRITO LA COSTA",
+                    "telefono": "",
+                    "direccion": "Ruta 1 Km 2,7",
+                    "horario": "",
+                    "textoAdicional": "Email: distrito.lacosta@santafeciudad.gov.ar\n+INFO: https://santafeciudad.gov.ar/secretaria-general/distritos/"
+                  }
+                }
+              ],
+              "ticket": {
+                "titulo": "DISTRITOS",
+                "telefono": "",
+                "direccion": "",
+                "horario": "",
+                "textoAdicional": "NOROESTE: Teniente Loza 6970 - distrito.noroeste@santafeciudad.gov.ar\nNORTE: Av. Gorriti 3900 – Parque Norte Botánico - 4578625\nNORESTE: Aristóbulo del Valle 9446 - 4806818\nOESTE: Cementerio Municipal – Blas Parera 5401 - distrito.oeste@santafeciudad.gov.ar\nESTE: Prado Español – Av. General Paz y Hernandarias - 4806812 / 4806813 / 4578418\nSUROESTE: Boca del Tigre (J.J. Paso y Dr. Zavalla) - distrito.suroeste@santafeciudad.gov.ar\nCENTRO: Estación Belgrano – Bv. Gálvez 1150 - 4571530\nLA COSTA: Ruta 1 Km 2,7 - distrito.lacosta@santafeciudad.gov.ar\n+INFO: https://santafeciudad.gov.ar/secretaria-general/distritos/"
+              }
+            }
+          ]
+        };
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
+
