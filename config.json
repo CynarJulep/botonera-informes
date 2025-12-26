@@ -137,7 +137,7 @@
         "telefono": "0800 777 5000",
         "direccion": "",
         "horario": "",
-        "textoAdicional": "Email: informes@santafeciudad.gov.ar\nChat web: Santafeciudad.gov.ar"
+        "textoAdicional": "Email: informes@santafeciudad.gov.ar\nChat web: www.santafeciudad.gov.ar"
       }
     },
     {
@@ -315,7 +315,7 @@
             "telefono": "",
             "direccion": "Ruta 1 Km 2,7",
             "horario": "",
-            "textoAdicional": "Email: distrito.lacosta@santafeciudad.gov.ar\n+INFO: https://santafeciudad.gov.ar/secretaria-general/distritos/"
+            "textoAdicional": "Email: distrito.lacosta@santafeciudad.gov.ar\n+INFO: https://www.santafeciudad.gov.ar/secretaria-general/distritos/"
           }
         }
       ],
@@ -324,7 +324,7 @@
         "telefono": "",
         "direccion": "",
         "horario": "",
-        "textoAdicional": "NOROESTE: Teniente Loza 6970 - distrito.noroeste@santafeciudad.gov.ar\nNORTE: Av. Gorriti 3900 – Parque Norte Botánico - 4578625\nNORESTE: Aristóbulo del Valle 9446 - 4806818\nOESTE: Cementerio Municipal – Blas Parera 5401 - distrito.oeste@santafeciudad.gov.ar\nESTE: Prado Español – Av. General Paz y Hernandarias - 4806812 / 4806813 / 4578418\nSUROESTE: Boca del Tigre (J.J. Paso y Dr. Zavalla) - distrito.suroeste@santafeciudad.gov.ar\nCENTRO: Estación Belgrano – Bv. Gálvez 1150 - 4571530\nLA COSTA: Ruta 1 Km 2,7 - distrito.lacosta@santafeciudad.gov.ar\n+INFO: https://santafeciudad.gov.ar/secretaria-general/distritos/"
+        "textoAdicional": "NOROESTE: Teniente Loza 6970 - distrito.noroeste@santafeciudad.gov.ar\nNORTE: Av. Gorriti 3900 – Parque Norte Botánico - 4578625\nNORESTE: Aristóbulo del Valle 9446 - 4806818\nOESTE: Cementerio Municipal – Blas Parera 5401 - distrito.oeste@santafeciudad.gov.ar\nESTE: Prado Español – Av. General Paz y Hernandarias - 4806812 / 4806813 / 4578418\nSUROESTE: Boca del Tigre (J.J. Paso y Dr. Zavalla) - distrito.suroeste@santafeciudad.gov.ar\nCENTRO: Estación Belgrano – Bv. Gálvez 1150 - 4571530\nLA COSTA: Ruta 1 Km 2,7 - distrito.lacosta@santafeciudad.gov.ar\n+INFO: https://www.santafeciudad.gov.ar/secretaria-general/distritos/"
       }
     }
   ]
