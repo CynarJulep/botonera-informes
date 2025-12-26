@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 config = await response.json();
                 botones = config.botones || [];
                 renderizarBotones();
+                inicializarEventListeners();
                 return;
             }
         } catch (fetchError) {
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             config = CONFIG_DATA;
             botones = config.botones || [];
             renderizarBotones();
+            inicializarEventListeners();
         } else {
             mostrarError('No se pudo cargar la configuración.');
         }
@@ -32,71 +34,103 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error al cargar configuración:', error);
         mostrarError('No se pudo cargar la configuración.');
     }
+});
 
+// Inicializar todos los event listeners
+function inicializarEventListeners() {
     // Event listeners para modal personalizado
     const btnPersonalizado = document.getElementById('btnPersonalizado');
-    const modal = document.getElementById('modalPersonalizado');
+    const modalPersonalizado = document.getElementById('modalPersonalizado');
     const closeModal = document.getElementById('closeModal');
     const btnCancelar = document.getElementById('btnCancelar');
     const formPersonalizado = document.getElementById('formPersonalizado');
 
-    btnPersonalizado.addEventListener('click', () => {
-        modal.classList.add('show');
-    });
+    if (btnPersonalizado) {
+        btnPersonalizado.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (modalPersonalizado) {
+                modalPersonalizado.classList.add('show');
+            }
+        });
+    }
 
-    closeModal.addEventListener('click', cerrarModal);
-    btnCancelar.addEventListener('click', cerrarModal);
-
-    formPersonalizado.addEventListener('submit', (e) => {
-        e.preventDefault();
-        generarTicketPersonalizado();
-    });
-
-    // Cerrar modal al hacer clic fuera
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+    if (closeModal) {
+        closeModal.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             cerrarModal();
-        }
-    });
+        });
+    }
 
-    // Event listeners para modal de subopciones usando event delegation
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            cerrarModal();
+        });
+    }
+
+    if (formPersonalizado) {
+        formPersonalizado.addEventListener('submit', (e) => {
+            e.preventDefault();
+            generarTicketPersonalizado();
+        });
+    }
+
+    // Cerrar modal personalizado al hacer clic fuera
+    if (modalPersonalizado) {
+        modalPersonalizado.addEventListener('click', (e) => {
+            if (e.target === modalPersonalizado) {
+                cerrarModal();
+            }
+        });
+    }
+
+    // Event listeners para modal de subopciones
     const modalSubopciones = document.getElementById('modalSubopciones');
     
-    // Usar event delegation para los botones que están dentro del modal
-    modalSubopciones.addEventListener('click', (e) => {
+    if (modalSubopciones) {
         // Cerrar modal al hacer clic fuera
-        if (e.target === modalSubopciones) {
-            cerrarModalSubopciones();
-            return;
-        }
-        
-        // Botón cerrar (X)
-        if (e.target.id === 'closeModalSubopciones' || e.target.closest('#closeModalSubopciones')) {
-            e.preventDefault();
-            e.stopPropagation();
-            cerrarModalSubopciones();
-            return;
-        }
-        
-        // Botón Cancelar
-        if (e.target.id === 'btnCancelarSubopciones' || e.target.closest('#btnCancelarSubopciones')) {
-            e.preventDefault();
-            e.stopPropagation();
-            cerrarModalSubopciones();
-            return;
-        }
-        
-        // Botón Imprimir Completo
-        if (e.target.id === 'btnImprimirCompleto' || e.target.closest('#btnImprimirCompleto')) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (botonActualConSubopciones) {
-                imprimirTicket(botonActualConSubopciones);
+        modalSubopciones.addEventListener('click', (e) => {
+            if (e.target === modalSubopciones) {
                 cerrarModalSubopciones();
             }
-            return;
+        });
+
+        // Event delegation para botones dentro del modal-content
+        const modalContent = modalSubopciones.querySelector('.modal-content');
+        if (modalContent) {
+            modalContent.addEventListener('click', (e) => {
+                // Botón cerrar (X)
+                if (e.target.id === 'closeModalSubopciones' || e.target.closest('#closeModalSubopciones')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    cerrarModalSubopciones();
+                    return;
+                }
+                
+                // Botón Cancelar
+                if (e.target.id === 'btnCancelarSubopciones' || e.target.closest('#btnCancelarSubopciones')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    cerrarModalSubopciones();
+                    return;
+                }
+                
+                // Botón Imprimir Completo
+                if (e.target.id === 'btnImprimirCompleto' || e.target.closest('#btnImprimirCompleto')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (botonActualConSubopciones) {
+                        imprimirTicket(botonActualConSubopciones);
+                        cerrarModalSubopciones();
+                    }
+                    return;
+                }
+            });
         }
-    });
+    }
 
     // Atajos de teclado para modales
     document.addEventListener('keydown', (e) => {
@@ -105,30 +139,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             const modalPersonalizado = document.getElementById('modalPersonalizado');
             const modalSubopciones = document.getElementById('modalSubopciones');
             
-            if (modalPersonalizado.classList.contains('show')) {
+            if (modalPersonalizado && modalPersonalizado.classList.contains('show')) {
                 cerrarModal();
-            } else if (modalSubopciones.classList.contains('show')) {
+            } else if (modalSubopciones && modalSubopciones.classList.contains('show')) {
                 cerrarModalSubopciones();
             }
         }
-        
-        // Enter para aceptar en formularios (solo si hay un formulario activo)
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-            const modalPersonalizado = document.getElementById('modalPersonalizado');
-            if (modalPersonalizado.classList.contains('show')) {
-                const form = document.getElementById('formPersonalizado');
-                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
-                    // No hacer nada, dejar que el formulario maneje el Enter
-                    return;
-                }
-            }
-        }
     });
-});
+}
 
 // Renderizar botones desde la configuración
 function renderizarBotones() {
     const botonera = document.getElementById('botonera');
+    if (!botonera) return;
+    
     botonera.innerHTML = '';
 
     botones.forEach(boton => {
@@ -143,7 +167,8 @@ function crearBotonElement(boton) {
     div.className = 'boton-area';
     
     // Si tiene subopciones, mostrar modal; si no, imprimir directamente
-    div.addEventListener('click', () => {
+    div.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (boton.tieneSubopciones && boton.subopciones) {
             mostrarModalSubopciones(boton);
         } else {
@@ -171,6 +196,8 @@ function mostrarModalSubopciones(boton) {
     const titulo = document.getElementById('tituloModalSubopciones');
     const container = document.getElementById('subopcionesContainer');
 
+    if (!modal || !titulo || !container) return;
+
     titulo.textContent = `Seleccione una opción - ${boton.nombre}`;
     container.innerHTML = '';
 
@@ -186,7 +213,8 @@ function mostrarModalSubopciones(boton) {
             <div class="subopcion-nombre">${subopcion.nombre}</div>
             ${direccionHTML}
         `;
-        item.addEventListener('click', () => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
             const botonTemporal = { ticket: subopcion.ticket };
             imprimirTicket(botonTemporal);
             cerrarModalSubopciones();
@@ -200,7 +228,9 @@ function mostrarModalSubopciones(boton) {
 // Cerrar modal de subopciones
 function cerrarModalSubopciones() {
     const modal = document.getElementById('modalSubopciones');
-    modal.classList.remove('show');
+    if (modal) {
+        modal.classList.remove('show');
+    }
     botonActualConSubopciones = null;
 }
 
@@ -218,6 +248,7 @@ function imprimirTicket(boton) {
 // Generar HTML del ticket
 function generarHTMLTicket(ticketData) {
     const container = document.getElementById('ticketContainer');
+    if (!container) return;
     
     let infoHTML = '';
     
@@ -278,25 +309,30 @@ function generarHTMLTicket(ticketData) {
 
 // Generar ticket personalizado
 function generarTicketPersonalizado() {
-    const titulo = document.getElementById('tituloPersonalizado').value;
-    const telefono = document.getElementById('telefonoPersonalizado').value;
-    const direccion = document.getElementById('direccionPersonalizado').value;
-    const horario = document.getElementById('horarioPersonalizado').value;
-    const textoAdicional = document.getElementById('textoAdicional').value;
+    const titulo = document.getElementById('tituloPersonalizado');
+    const telefono = document.getElementById('telefonoPersonalizado');
+    const direccion = document.getElementById('direccionPersonalizado');
+    const horario = document.getElementById('horarioPersonalizado');
+    const textoAdicional = document.getElementById('textoAdicional');
+
+    if (!titulo) return;
 
     const ticketData = {
-        titulo: titulo,
-        telefono: telefono || null,
-        direccion: direccion || null,
-        horario: horario || null,
-        textoAdicional: textoAdicional || null
+        titulo: titulo.value,
+        telefono: telefono ? telefono.value : '',
+        direccion: direccion ? direccion.value : '',
+        horario: horario ? horario.value : '',
+        textoAdicional: textoAdicional ? textoAdicional.value : ''
     };
 
     generarHTMLTicket(ticketData);
     cerrarModal();
     
     // Limpiar formulario
-    document.getElementById('formPersonalizado').reset();
+    const form = document.getElementById('formPersonalizado');
+    if (form) {
+        form.reset();
+    }
     
     // Pequeño delay para asegurar que el HTML se renderice
     setTimeout(() => {
@@ -307,11 +343,12 @@ function generarTicketPersonalizado() {
 // Cerrar modal
 function cerrarModal() {
     const modal = document.getElementById('modalPersonalizado');
-    modal.classList.remove('show');
+    if (modal) {
+        modal.classList.remove('show');
+    }
 }
 
 // Mostrar error
 function mostrarError(mensaje) {
     alert(mensaje);
 }
-
