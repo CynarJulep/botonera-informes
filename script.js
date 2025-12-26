@@ -59,33 +59,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Event listeners para modal de subopciones
+    // Event listeners para modal de subopciones usando event delegation
     const modalSubopciones = document.getElementById('modalSubopciones');
-    const closeModalSubopciones = document.getElementById('closeModalSubopciones');
-    const btnCancelarSubopciones = document.getElementById('btnCancelarSubopciones');
-    const btnImprimirCompleto = document.getElementById('btnImprimirCompleto');
-
-    closeModalSubopciones.addEventListener('click', (e) => {
-        e.stopPropagation();
-        cerrarModalSubopciones();
-    });
-    btnCancelarSubopciones.addEventListener('click', (e) => {
-        e.stopPropagation();
-        cerrarModalSubopciones();
-    });
-
-    btnImprimirCompleto.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (botonActualConSubopciones) {
-            imprimirTicket(botonActualConSubopciones);
-            cerrarModalSubopciones();
-        }
-    });
-
-    // Cerrar modal de subopciones al hacer clic fuera
+    
+    // Usar event delegation para los botones que están dentro del modal
     modalSubopciones.addEventListener('click', (e) => {
+        // Cerrar modal al hacer clic fuera
         if (e.target === modalSubopciones) {
             cerrarModalSubopciones();
+            return;
+        }
+        
+        // Botón cerrar (X)
+        if (e.target.id === 'closeModalSubopciones' || e.target.closest('#closeModalSubopciones')) {
+            e.preventDefault();
+            e.stopPropagation();
+            cerrarModalSubopciones();
+            return;
+        }
+        
+        // Botón Cancelar
+        if (e.target.id === 'btnCancelarSubopciones' || e.target.closest('#btnCancelarSubopciones')) {
+            e.preventDefault();
+            e.stopPropagation();
+            cerrarModalSubopciones();
+            return;
+        }
+        
+        // Botón Imprimir Completo
+        if (e.target.id === 'btnImprimirCompleto' || e.target.closest('#btnImprimirCompleto')) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (botonActualConSubopciones) {
+                imprimirTicket(botonActualConSubopciones);
+                cerrarModalSubopciones();
+            }
+            return;
         }
     });
 
