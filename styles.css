@@ -337,8 +337,17 @@ header h1 {
 
 .subopcion-item .subopcion-nombre {
     font-weight: bold;
-    color: #2c3e50;
+    color: #212529;
     font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.subopcion-item .subopcion-direccion {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: normal;
+    line-height: 1.3;
+    margin-top: 4px;
 }
 
 .btn-imprimir-completo {

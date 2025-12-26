@@ -65,10 +65,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnCancelarSubopciones = document.getElementById('btnCancelarSubopciones');
     const btnImprimirCompleto = document.getElementById('btnImprimirCompleto');
 
-    closeModalSubopciones.addEventListener('click', cerrarModalSubopciones);
-    btnCancelarSubopciones.addEventListener('click', cerrarModalSubopciones);
+    closeModalSubopciones.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cerrarModalSubopciones();
+    });
+    btnCancelarSubopciones.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cerrarModalSubopciones();
+    });
 
-    btnImprimirCompleto.addEventListener('click', () => {
+    btnImprimirCompleto.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (botonActualConSubopciones) {
             imprimirTicket(botonActualConSubopciones);
             cerrarModalSubopciones();
@@ -79,6 +86,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalSubopciones.addEventListener('click', (e) => {
         if (e.target === modalSubopciones) {
             cerrarModalSubopciones();
+        }
+    });
+
+    // Atajos de teclado para modales
+    document.addEventListener('keydown', (e) => {
+        // Escape para cerrar cualquier modal
+        if (e.key === 'Escape') {
+            const modalPersonalizado = document.getElementById('modalPersonalizado');
+            const modalSubopciones = document.getElementById('modalSubopciones');
+            
+            if (modalPersonalizado.classList.contains('show')) {
+                cerrarModal();
+            } else if (modalSubopciones.classList.contains('show')) {
+                cerrarModalSubopciones();
+            }
+        }
+        
+        // Enter para aceptar en formularios (solo si hay un formulario activo)
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            const modalPersonalizado = document.getElementById('modalPersonalizado');
+            if (modalPersonalizado.classList.contains('show')) {
+                const form = document.getElementById('formPersonalizado');
+                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+                    // No hacer nada, dejar que el formulario maneje el Enter
+                    return;
+                }
+            }
         }
     });
 });
@@ -134,8 +168,14 @@ function mostrarModalSubopciones(boton) {
     boton.subopciones.forEach((subopcion, index) => {
         const item = document.createElement('div');
         item.className = 'subopcion-item';
+        
+        // Obtener dirección del ticket
+        const direccion = subopcion.ticket?.direccion || '';
+        const direccionHTML = direccion ? `<div class="subopcion-direccion">${direccion}</div>` : '';
+        
         item.innerHTML = `
             <div class="subopcion-nombre">${subopcion.nombre}</div>
+            ${direccionHTML}
         `;
         item.addEventListener('click', () => {
             const botonTemporal = { ticket: subopcion.ticket };
